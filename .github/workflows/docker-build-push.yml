@@ -8,6 +8,7 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags')
     steps:
       -
         name: Checkout
@@ -31,3 +32,11 @@ jobs:
           context: .
           push: true
           tags: tcjj3/gps-server_docker:latest
+      - 
+        name: Docker Hub Description
+        uses: peter-evans/dockerhub-description@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: tcjj3/gps-server_docker
+          short-description: ${{ github.event.repository.description }}
